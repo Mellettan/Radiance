@@ -5,133 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="55cbf255-d80d-4c71-b211-eb98a35fdd3a" name="Changes" comment="build: init commit">
-      <change afterPath="$PROJECT_DIR$/.env.template" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/Radiance.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/accounts/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/accounts/admin.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/accounts/apps.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/accounts/forms.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/accounts/management/commands/create_bots.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/accounts/management/commands/create_users.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/accounts/migrations/0001_initial.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/accounts/migrations/0002_customuser_avatar.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/accounts/migrations/0003_subscription.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/accounts/migrations/0004_alter_customuser_avatar.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/accounts/migrations/0005_customuser_email_verified.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/accounts/migrations/0006_customuser_temp_email.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/accounts/migrations/0007_alter_customuser_avatar.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/accounts/migrations/0008_alter_customuser_username.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/accounts/migrations/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/accounts/models.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/accounts/static/accounts/css/change_email.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/accounts/static/accounts/css/change_password.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/accounts/static/accounts/css/delete.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/accounts/static/accounts/css/login.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/accounts/static/accounts/css/reg.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/accounts/tasks.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/accounts/templates/accounts/change_email.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/accounts/templates/accounts/change_password.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/accounts/templates/accounts/delete.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/accounts/templates/accounts/login.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/accounts/templates/accounts/reg.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/accounts/tests.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/accounts/urls.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/accounts/views.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/chat/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/chat/admin.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/chat/apps.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/chat/consumers.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/chat/forms.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/chat/migrations/0001_initial.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/chat/migrations/0002_alter_message_sender.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/chat/migrations/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/chat/models.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/chat/static/chat/css/chat.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/chat/templates/chat/chat.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/chat/tests.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/chat/urls.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/chat/views.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/manage.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/media/anonymous_avatar.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/media/default_avatar.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/media/test_avatar.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/media/users/roman@mellettan.ru/avatars/cat.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/media/users/roman@mellettan.ru/avatars/cat_T3JP3CL.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/media/users/roman@mellettan.ru/avatars/cold_avatar.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/notifications/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/notifications/admin.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/notifications/apps.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/notifications/migrations/0001_initial.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/notifications/migrations/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/notifications/models.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/notifications/signals.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/notifications/static/notifications/css/notifications.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/notifications/templates/notifications/notifications.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/notifications/templatetags/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/notifications/templatetags/unread_n_count.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/notifications/tests.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/notifications/urls.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/notifications/views.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/poetry.lock" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/posts/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/posts/admin.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/posts/apps.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/posts/forms.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/posts/migrations/0001_initial.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/posts/migrations/0002_post_liked_by.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/posts/migrations/0003_delete_subscription.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/posts/migrations/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/posts/models.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/posts/static/posts/css/home.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/posts/static/posts/js/home.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/posts/templates/posts/home.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/posts/tests.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/posts/urls.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/posts/views.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pyproject.toml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/radiance/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/radiance/asgi.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/radiance/settings.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/radiance/urls.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/radiance/views.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/radiance/wsgi.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/css/404.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/favicon/android-chrome-192x192.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/favicon/android-chrome-512x512.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/favicon/apple-touch-icon.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/favicon/favicon-16x16.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/favicon/favicon-32x32.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/favicon/favicon.ico" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/favicon/site.webmanifest" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/subs/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/subs/admin.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/subs/apps.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/subs/migrations/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/subs/models.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/subs/static/subs/css/subs.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/subs/templates/subs/subs.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/subs/tests.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/subs/urls.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/subs/views.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/404.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/base.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/userinfo/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/userinfo/admin.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/userinfo/apps.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/userinfo/migrations/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/userinfo/models.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/userinfo/static/userinfo/css/userinfo.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/userinfo/static/userinfo/js/userinfo.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/userinfo/templates/userinfo/userinfo.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/userinfo/tests.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/userinfo/urls.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/userinfo/views.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/chat/gpt.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/accounts/management/commands/create_bots.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/management/commands/create_bots.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/chat/consumers.py" beforeDir="false" afterPath="$PROJECT_DIR$/chat/consumers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/chat/templates/chat/chat.html" beforeDir="false" afterPath="$PROJECT_DIR$/chat/templates/chat/chat.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notifications/tests.py" beforeDir="false" afterPath="$PROJECT_DIR$/notifications/tests.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/poetry.lock" beforeDir="false" afterPath="$PROJECT_DIR$/poetry.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pyproject.toml" beforeDir="false" afterPath="$PROJECT_DIR$/pyproject.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/radiance/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/radiance/settings.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -226,7 +108,15 @@
       <option name="project" value="LOCAL" />
       <updated>1724206172843</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="build: init commit">
+      <option name="closed" value="true" />
+      <created>1724373271627</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1724373271627</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="UnknownFeatures">

@@ -126,11 +126,11 @@ class SignalTests(TestCase):
         notifications = Notification.objects.filter(user=self.user1)
         self.assertEqual(notifications.count(), 2)
 
-        password_notification = notifications.filter(topic='Изменение пароля').first()
+        password_notification = notifications.get(topic='Изменение пароля')
         self.assertIsNotNone(password_notification)
         self.assertEqual(password_notification.message, "Ваш пароль был успешно изменен.")
 
-        email_notification = notifications.filter(topic='Изменение email').first()
+        email_notification = notifications.get(topic='Изменение email')
         self.assertIsNotNone(email_notification)
         self.assertEqual(email_notification.message, f"Ваш email был успешно изменен на {self.user1.email}.")
 

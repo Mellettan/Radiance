@@ -1,3 +1,4 @@
+import asyncio
 import json
 
 from channels.db import database_sync_to_async
@@ -5,6 +6,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 import loguru
 
 from accounts.models import CustomUser
+from .gpt import make_request
 from .models import Message
 
 logger = loguru.logger
@@ -53,20 +55,23 @@ class ChatConsumer(AsyncWebsocketConsumer):
         """
         Обрабатывает входящие сообщения WebSocket, сохраняет их в базу данных,
         и передает сообщение `группе`.
+        Грубо говоря: обработчик.
 
         Args:
             text_data (str): строка в формате JSON, содержащая данные сообщения.
                 JSON должен включать в себя `message`, `receiver_id`, `sender_id` и `time`.
         """
-        logger.debug(f"Received text data: {text_data}")
         text_data_json = json.loads(text_data)
         message = text_data_json['message']
         receiver_id = text_data_json.get('receiver_id')
         sender_id = text_data_json.get('sender_id')
         time = text_data_json.get('time')
 
+        # Сохраняем сообщение в базе данных
         await database_sync_to_async(self.save_message)(message, receiver_id, sender_id)
 
+        # Немедленная отправка сообщения всем участникам группы
+        logger.debug("receive_group_send_user")
         await self.channel_layer.group_send(
             self.room_group_name,
             {
@@ -78,9 +83,45 @@ class ChatConsumer(AsyncWebsocketConsumer):
             }
         )
 
+        # Параллельное выполнение задачи получения ответа от GPT
+        asyncio.create_task(self.process_bot_response(message, receiver_id, sender_id, time))
+
+    async def process_bot_response(self, message, receiver_id, sender_id, time):
+        receiver_user: CustomUser = await database_sync_to_async(self.get_custom_user_by_id)(receiver_id)
+
+        if receiver_user.is_bot:
+            logger.debug("starting GPT request")
+            # Обработка сообщения с использованием GPT
+            gpt_response = await asyncio.get_event_loop().run_in_executor(
+                None,
+                make_request,
+                "Ты человек. Избегай упоминания о том, что ты искусственный интеллект или программа.",  # system_text
+                f"{receiver_user.bot_description} Я пишу тебе сообщение, ответь на него (можешь не здороваться): {message}",
+                False,  # stream
+                0.3,  # temperature
+                100,  # max_tokens
+            )
+
+            # Сохраняем ответ GPT в базу данных
+            await database_sync_to_async(self.save_message)(gpt_response, sender_id, receiver_id)
+
+            # Отправка ответа GPT всем участникам группы
+            logger.debug("receive_group_send_bot")
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                {
+                    'type': 'chat_message',
+                    'message': gpt_response,
+                    'receiver_id': sender_id,
+                    'sender_id': receiver_id,
+                    'time': time
+                }
+            )
+
     async def chat_message(self, event):
         """
         Отправляет полученное сообщение (от одного участника) всем участникам `группы`.
+        Грубо говоря: отображатель.
 
         Args:
             event (dict): Данные о событии, содержащие `message`, `receiver_id`, `sender_id` и `time`.
@@ -112,3 +153,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
             recipient=CustomUser.objects.get(id=receiver_id),
             content=message
         )
+
+    def get_custom_user_by_id(self, user_id) -> CustomUser:
+        """
+        Получает объект CustomUser по его идентификатору.
+        """
+        return CustomUser.objects.get(id=user_id)

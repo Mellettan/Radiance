@@ -39,7 +39,11 @@
                 <img src="{{ other_user.avatar.url }}" alt="Аватар">
                 {{ other_user.username }}
             </h3>
-            <p class="last-seen">{{ other_user.last_login|date:"j F, G:i" }}</p>
+            {% if not other_user.is_bot %}
+                <p class="last-seen">{{ other_user.last_login|date:"j F, G:i" }}</p>
+            {% else %}
+                <p class="last-seen">Бот</p>
+            {% endif %}
             <div class="messages-list" id="messages-list">
                 {% for message in message_list %}
                     <div class="message">
@@ -52,7 +56,7 @@
             </div>
             <div class="message-input">
                 <form class="message-form" id="message-form" method="post">
-                    <textarea class="message-ta" id="message-input" placeholder="Write a message..."></textarea>
+                    <textarea class="message-ta" id="message-input" placeholder="Напишите сообщение..."></textarea>
                     <button type="submit"><i class="fa-solid fa-arrow-up"></i></button>
                 </form>
             </div>

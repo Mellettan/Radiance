@@ -205,3 +205,7 @@ CHANNEL_LAYERS = {
         },
     },
 }
+
+# YaGPT ApiKey
+
+YAGPT_API_KEY = getenv('YAGPT_API_KEY')
