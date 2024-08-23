@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Posts of {{ user_of_posts.username }}{% endblock %}
+
+{% block extrahead %}
+    <script src="https://yastatic.net/s3/passport-sdk/autofill/v1/sdk-suggest-with-polyfills-latest.js"></script>
+{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'posts/css/home.css' %}">
+{% endblock %}
+
+{% block content %}
+<aside class="left-panel">
+    <div class="profile">
+        <img src="{{ user_of_posts.avatar.url }}" alt="Аватар">
+        <h2>{{ user_of_posts.username }}</h2>
+        <p>{{ user_of_posts.email }}</p>
+    </div>
+
+    {% if request.user.is_authenticated %}
+        {% if request.user == user_of_posts %}
+        <div class="sign-out">
+            <form action="{% url 'accounts:logout' %}" method="post">
+                {% csrf_token %}
+                <button class="sign-out-button" type="submit">Выйти</button>
+            </form>
+        </div>
+        {% else %}
+        <div class="subscribe">
+            <form action="." method="post">
+                {% csrf_token %}
+                <button class="subscribe-button" type="submit" name="subscribe">
+                    {% if user_of_posts_in_followers %}
+                        Отписаться
+                    {% else %}
+                        Подписаться
+                    {% endif %}
+                </button>
+            </form>
+        </div>
+        <div class="write-message">
+            <a href="{% url 'chat:chat' user_id=user_of_posts.pk %}"><i class="fa-solid fa-comment"></i></a>
+        </div>
+        {% endif %}
+    {% endif %}
+</aside>
+<section class="main-content">
+    {% if messages %}
+        <div class="messages">
+        {% for message in messages %}
+            <div class="{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+        </div>
+    {% endif %}
+    {% if request.user.is_authenticated and request.user == user_of_posts %}
+        <form class="new-post" method="post" action=".">
+            {% csrf_token %}
+            <textarea class="new-post-ta" name="content" placeholder="Что случилось?"></textarea>
+            <button type="submit" name="new-post"><i class="fa-solid fa-arrow-up"></i></button>
+        </form>
+    {% endif %}
+        <div class="posts">
+            {% for post in posts %}
+            <div class="post">
+                <img src="{{ post.user.avatar.url }}" alt="Аватар">
+                <h3>{{ post.user.username }}</h3>
+                <div class="post-datetime">{{ post.created_at|date:"j F, G:i" }}</div>
+                <p>{{ post.content }}</p>
+                <div class="post-actions">
+                    {% if request.user.is_authenticated %}
+                        <form class="like-form" method="post" action=".">
+                            {% csrf_token %}
+                            <input type="hidden" name="post-pk" value="{{ post.pk }}">
+                            <button class="like-button" type="submit" name="like-post">
+                                {% if request.user in post.liked_by.all %}
+                                    <i class="fa-solid fa-heart"></i>
+                                {% else %}
+                                    <i class="fa-regular fa-heart"></i>
+                                {% endif %}
+                            </button>
+                        </form>
+                    {% else %}
+                        <button class="like-button disabled" type="button">
+                            <i class="fa-regular fa-heart"></i>
+                        </button>
+                    {% endif %}
+                    <button class="comment-button"><i class="fa-regular fa-comment"></i></button>
+                </div>
+                <div class="comment-list">
+                    {% for comment in post.comments.all %}
+                        <p><strong>{{ comment.user.username }}:</strong> {{ comment.content }}</p>
+                    {% endfor %}
+                </div>
+                <form class="comment-form" method="post" action=".">
+                    {% if request.user.is_authenticated%}
+                    {% csrf_token %}
+                    <input type="text" name="content" placeholder="Add a comment...">
+                    <input type="hidden" name="post-pk" value="{{ post.pk }}">
+                    <button type="submit" name="new-comment"><i class="fa-solid fa-arrow-up"></i></button>
+                    {% endif %}
+                </form>
+            </div>
+            {% empty %}
+            <h1 style="text-align: center">Тут пока-что пусто &#128532;</h1>
+            {% endfor %}
+        </div>
+    </section>
+<aside class="right-panel">
+    <div class="subscriptions">
+        <h3>Подписки</h3>
+        <div class="subscriptions-list">
+            {% for subscription in subscriptions %}
+            <a class="subscription" href="{% url 'posts:home' pk=subscription.following.pk %}">
+                <img src="{{ subscription.following.avatar.url }}" alt="Аватар">
+                <p>{{ subscription.following.username }}</p>
+            </a>
+            {% empty %}
+            <p style="text-align: center">Подписок нет</p>
+            {% endfor %}
+        </div>
+    </div>
+</aside>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'posts/js/home.js' %}"></script>
+{% endblock %}

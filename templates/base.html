@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+{% load static %}
+{% load unread_n_count %}
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Radiance{% endblock %}</title>
+    <!-- Подключаем стили и иконки -->
+    <link rel="icon" href="{% static 'favicon/favicon.ico' %}" type="image/x-icon">
+    {% block styles %}
+    {% endblock %}
+    <!-- Подключаем GoogleFonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates&display=swap" rel="stylesheet">
+    <!-- Иконки -->
+    <script src="https://kit.fontawesome.com/30eac09af0.js" crossorigin="anonymous"></script>
+    {% block extrahead %}
+    {% endblock %}
+</head>
+
+<body>
+    <header>
+        {% if request.user.is_authenticated %}
+            <div class="logo"><a href="{% url 'posts:home' pk=request.user.pk %}">Radiance</a></div>
+        {% else %}
+            <div class="logo"><a href=".">Radiance</a></div>
+        {% endif %}
+        {% block nav %}
+            <nav>
+                {% if request.user.is_authenticated %}
+                <a href="{% url 'posts:home' pk=request.user.pk %}"><i class="fa-solid fa-house"></i></a>
+                <a href="{% url 'userinfo:userinfo' %}"><i class="fa-solid fa-user"></i></a>
+                <a href="{% url 'chat:chat' user_id=request.user.pk%}"><i class="fa-solid fa-envelope"></i></a>
+                <a href="{% url 'notifications:notifications' %}" class="notification-link">
+                    <i class="fa-solid fa-bell"></i>
+                    {% with request.user.notifications|unread_notifications_count as notification_count %}
+                        {% if notification_count %}
+                            <span class="notification-badge">{{ notification_count }}</span>
+                        {% endif %}
+                    {% endwith %}
+                </a>
+                <a class="nav-subs" href="{% url 'subs:subs' %}"><i class="fa-solid fa-user-group"></i></a>
+                {% else %}
+                <a href="{% url 'userinfo:userinfo' %}"><i class="fa-solid fa-user"></i></a>
+                <a class="nav-subs" href="{% url 'subs:subs' %}"><i class="fa-solid fa-user-group"></i></a>
+                {% endif %}
+            </nav>
+        {% endblock %}
+    </header>
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+    {% block scripts %}
+    {% endblock %}
+    <footer>
+        <p>&copy; 2024 Radiance</p>
+    </footer>
+</body>
+
+</html>

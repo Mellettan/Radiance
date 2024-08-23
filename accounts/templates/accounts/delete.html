@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}Delete account{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'accounts/css/delete.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="confirm">
+        <h1>Вы уверены, что хотите удалить свой аккаунт?</h1>
+        <form method="post" action=".">
+            {% csrf_token %}
+            <button type="submit" name="delete_button">Удалить</button>
+        </form>
+    </div>
+{% endblock %}

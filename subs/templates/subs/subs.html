@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %} My subscriptions {% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{% static 'subs/css/subs.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="subscriptions">
+    <h3>Мои подписки</h3>
+    <div class="subscriptions-list">
+        {% for subscription in subscriptions %}
+        <a class="subscription" href="{% url 'posts:home' pk=subscription.following.pk %}">
+            <img src="{{ subscription.following.avatar.url }}" alt="Аватар">
+            <p>{{ subscription.following.username }}</p>
+        </a>
+        {% empty %}
+        <p style="text-align: center">Подписок нет</p>
+        {% endfor %}
+    </div>
+</div>
+
+
+<div class="people">
+    <h3>Люди</h3>
+    <div class="find">
+        <form method="get" action="." class="find_form">
+            <input type="text" name="q" placeholder="Имя/email" value="{{ request.GET.q }}">
+            <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+        </form>
+    </div>
+    <div class="pagination">
+        <a href="?q={{ request.GET.q }}&page=1"><strong>1</strong></a>
+        {% if page_obj.has_previous %}
+            <a href="?q={{ request.GET.q }}&page={{ page_obj.previous_page_number }}"><i class="fa-solid fa-arrow-left"></i></a>
+        {% else %}
+            <a href="?q={{ request.GET.q }}&page=1"><i class="fa-solid fa-arrow-left"></i></a>
+        {% endif %}
+        <a class="current"><strong>{{ page_obj.number }}</strong></a>
+        {% if page_obj.has_next %}
+            <a href="?q={{ request.GET.q }}&page={{ page_obj.next_page_number }}"><i class="fa-solid fa-arrow-right"></i></a>
+        {% else %}
+            <a href="?q={{ request.GET.q }}&page={{ page_obj.paginator.num_pages }}"><i class="fa-solid fa-arrow-right"></i></a>
+        {% endif %}
+        <a href="?q={{ request.GET.q }}&page={{ page_obj.paginator.num_pages }}"><strong>{{ page_obj.paginator.num_pages }}</strong></a>
+    </div>
+    <div class="people-list">
+        {% for person in page_obj.object_list %}
+            <a class="person" href="{% url 'posts:home' pk=person.pk %}">
+                <img src="{{ person.avatar.url }}" alt="Аватар">
+                <p>{{ person.username }}</p>
+            </a>
+        {% empty %}
+            <p style="text-align: center">Пользователи не найдены</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

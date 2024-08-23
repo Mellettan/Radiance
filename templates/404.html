@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Page not found{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/404.css' %}">
+{% endblock %}
+
+{% block content %}
+    <h1>There is no such page <span class="no-wrap">:(</span></h1>
+{% endblock %}

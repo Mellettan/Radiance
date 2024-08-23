@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    Chat
+{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'chat/css/chat.css' %}">
+{% endblock %}
+
+{% block extrahead %}
+    <meta id="current-user-data"
+          data-user-id="{{ request.user.pk }}"
+          data-avatar="{{ request.user.avatar.url }}"
+          data-username="{{ request.user.username }}">
+    <meta id="other-user-data"
+          data-avatar="{{ other_user.avatar.url }}"
+          data-username="{{ other_user.username }}">
+{% endblock %}
+
+{% block content %}
+    <aside class="left-panel">
+        <div class="chats">
+            <h3>Чаты</h3>
+            <div class="chats-list">
+                {% for chat_user in chat_users %}
+                <a class="chat" href="{% url 'chat:chat' user_id=chat_user.pk %}">
+                    <img src="{{ chat_user.avatar.url }}" alt="Аватар">
+                    <h4>{{ chat_user.username }}</h4>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+    </aside>
+    <section class="main-content">
+        <div class="messages">
+            <h3 id="chat-username">
+                <img src="{{ other_user.avatar.url }}" alt="Аватар">
+                {{ other_user.username }}
+            </h3>
+            <p class="last-seen">{{ other_user.last_login|date:"j F, G:i" }}</p>
+            <div class="messages-list" id="messages-list">
+                {% for message in message_list %}
+                    <div class="message">
+                        <img src="{{ message.sender.avatar.url }}" alt="Аватар">
+                        <div class="sender">{{ message.sender.username }}</div>
+                        <div class="text">{{ message.content }}</div>
+                        <div class="time">{{ message.timestamp|date:"H:i" }}</div>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="message-input">
+                <form class="message-form" id="message-form" method="post">
+                    <textarea class="message-ta" id="message-input" placeholder="Write a message..."></textarea>
+                    <button type="submit"><i class="fa-solid fa-arrow-up"></i></button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const messageList = document.getElementById('messages-list');
+            messageList.scrollTop = messageList.scrollHeight;
+        });
+        const userId = "{{ user_id }}";
+        const chatSocket = new WebSocket(
+            'ws://' + window.location.host + '/ws/chat/' + userId + '/'
+        );
+        const currentUserMeta = document.getElementById('current-user-data');
+        const currentUserAvatar = currentUserMeta.getAttribute('data-avatar');
+        const currentUserUsername = currentUserMeta.getAttribute('data-username');
+
+        const otherUserMeta = document.getElementById('other-user-data');
+        const otherUserAvatar = otherUserMeta.getAttribute('data-avatar');
+        const otherUserUsername = otherUserMeta.getAttribute('data-username');
+
+        chatSocket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+            const messageList = document.getElementById('messages-list');
+            const messageElement = document.createElement('div');
+            messageElement.className = 'message';
+            if (data.sender_id === currentUserMeta.getAttribute('data-user-id')) {
+                messageElement.innerHTML = `
+                    <img src="${currentUserAvatar}" alt="Аватар">
+                    <div class="sender">${currentUserUsername}</div>
+                    <div class="time">${data.time}</div>
+                    <div class="text">${data.message}</div>
+                `;
+            } else {
+                messageElement.innerHTML = `
+                    <img src="${otherUserAvatar}" alt="Аватар">
+                    <div class="sender">${otherUserUsername}</div>
+                    <div class="time">${data.time}</div>
+                    <div class="text">${data.message}</div>
+                `;
+            }
+            messageList.appendChild(messageElement);
+            messageList.scrollTop = messageList.scrollHeight;
+        };
+
+        chatSocket.onclose = function(e) {
+            console.error('Chat socket closed unexpectedly');
+        };
+
+
+        const form = document.getElementById('message-form');
+        const textarea = document.getElementById('message-input');
+
+        textarea.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                const messageInput = document.getElementById('message-input');
+                const message = messageInput.value;
+                chatSocket.send(JSON.stringify({
+                    'message': message,
+                    'receiver_id': userId,
+                    'sender_id': "{{ request.user.id }}",
+                    'time': new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                }));
+                messageInput.value = '';
+            }
+        });
+
+        form.onsubmit = function(e) {
+            e.preventDefault();
+            const messageInput = document.getElementById('message-input');
+            const message = messageInput.value;
+            chatSocket.send(JSON.stringify({
+                'message': message,
+                'receiver_id': userId,
+                'sender_id': "{{ request.user.id }}",
+                'time': new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            }));
+            messageInput.value = '';
+        };
+
+    </script>
+{% endblock %}

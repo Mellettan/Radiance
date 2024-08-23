@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}Notifications{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'notifications/css/notifications.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="notifications">
+        <h3>Уведомления</h3>
+        <div class="notifications-list">
+            {% for notification in notifications %}
+                <div class="notification">
+                    <div class="topic">{{ notification.topic }}</div>
+                    <div class="time">{{ notification.created_at|date:"j N, H:i" }}</div>
+                    <div class="text">{% autoescape off %}{{ notification.message }}{% endautoescape %}</div>
+                </div>
+            {% empty %}
+                <p style="text-align: center">Уведомлений нет</p>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

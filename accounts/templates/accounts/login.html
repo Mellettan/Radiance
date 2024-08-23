@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}Sign in{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'accounts/css/login.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="login">
+        <h1>Вход</h1>
+        <form method="post" action=".">
+            {% csrf_token %}
+
+            <input type="email" id="email" name="email" placeholder="Email"
+                   value="{{ form.email.value|default_if_none:'' }}">
+            <input type="password" id="password" name="password" placeholder="Password">
+            <button type="submit">Войти</button>
+        </form>
+        {% if form.errors %}
+            <div class="form-errors">
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <div class="error">{{ field.label }}: {{ error }}</div>
+                    {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                    <div class="error">{{ error }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+
+        <a href="{% url 'accounts:registration' %}">Регистрация</a>
+    </div>
+
+    <div class="login-via">
+        <h2>Войти с помощью</h2>
+        <div class="services">
+            <i class="fa-brands fa-yandex"></i>
+        </div>
+    </div>
+{% endblock %}

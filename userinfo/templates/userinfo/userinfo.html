@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ request.user.username }}{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'userinfo/css/userinfo.css' %}">
+{% endblock %}
+
+{% block content %}
+    <section class="main-content">
+        {% if request.user.is_authenticated %}
+            <form class="change-avatar-form" method="post" action="." enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="file" class="avatar-input" id="avatar-input" name="avatar" accept="image/*">
+                <button type="button" class="change-avatar-button" id="change-avatar-button">
+                    <img src="{{ request.user.avatar.url }}" alt="Аватар">
+                </button>
+            </form>
+        {% else %}
+            <button class="change-avatar-button" name="change-avatar">
+                <img src="/media/anonymous_avatar.jpg" alt="Аватар">
+            </button>
+        {% endif %}
+        <h1>{{ request.user.username|default:"Anonymous" }}</h1>
+        {% if request.user.is_authenticated %}
+            <div class="info">
+                <div class="annotation">Email</div>
+                <div class="email">{{ request.user.email }}</div>
+                <a class="change-email-button" href="{% url 'accounts:change_email' %}">Изменить email</a>
+            </div>
+            <div class="sign-out">
+                <form action="{% url 'accounts:logout' %}" method="post">
+                    {% csrf_token %}
+                    <button class="sign-out-button" type="submit">Выйти</button>
+                </form>
+            </div>
+            <a class="change-password-button" href="{% url 'accounts:change_password' %}">Изменить пароль</a>
+            <a class="delete-account-button" href="{% url 'accounts:delete' %}">Удалить аккаунт</a>
+        {% else %}
+            <a class="login-button" href="{% url 'accounts:login' %}">Login</a>
+        {% endif %}
+    </section>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'userinfo/js/userinfo.js' %}"></script>
+{% endblock %}
