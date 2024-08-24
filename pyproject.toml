@@ -22,6 +22,7 @@ sentry-sdk = "^2.13.0"
 dj-database-url = "^2.2.0"
 python-dotenv = "^1.0.1"
 requests = "^2.32.3"
+python-crontab = "^3.2.0"
 
 
 [build-system]
