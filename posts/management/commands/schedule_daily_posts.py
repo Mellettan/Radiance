@@ -39,10 +39,20 @@ class Command(BaseCommand):
             seconds_since_midnight_afternoon = random.randint(12 * 3600, 18 * 3600)
             seconds_since_midnight_evening = random.randint(18 * 3600, 24 * 3600)
 
-            create_bot_post.send_with_options(args=(bot.id,), delay=timedelta(seconds=seconds_since_midnight_morning))
-            create_bot_post.send_with_options(args=(bot.id,), delay=timedelta(seconds=seconds_since_midnight_afternoon))
-            create_bot_post.send_with_options(args=(bot.id,), delay=timedelta(seconds=seconds_since_midnight_evening))
+            create_bot_post.send_with_options(
+                args=(bot.id,), delay=timedelta(seconds=seconds_since_midnight_morning)
+            )
+            create_bot_post.send_with_options(
+                args=(bot.id,),
+                delay=timedelta(seconds=seconds_since_midnight_afternoon),
+            )
+            create_bot_post.send_with_options(
+                args=(bot.id,), delay=timedelta(seconds=seconds_since_midnight_evening)
+            )
 
             self.stdout.write(
-                self.style.NOTICE(f'Created bot "{bot.username}" posts: {seconds_since_midnight_morning}, '
-                                  f'{seconds_since_midnight_afternoon}, {seconds_since_midnight_evening}'))
+                self.style.NOTICE(
+                    f'Created bot "{bot.username}" posts: {seconds_since_midnight_morning}, '
+                    f"{seconds_since_midnight_afternoon}, {seconds_since_midnight_evening}"
+                )
+            )

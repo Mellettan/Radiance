@@ -1,6 +1,10 @@
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
-from django.db import models
+from django.contrib.auth.models import (
+    AbstractBaseUser,
+    BaseUserManager,
+    PermissionsMixin,
+)
 from django.core.validators import FileExtensionValidator
+from django.db import models
 
 
 class CustomUserManager(BaseUserManager):
@@ -8,7 +12,10 @@ class CustomUserManager(BaseUserManager):
     Менеджер пользовательской модели пользователя, где адрес электронной почты является
     уникальным идентификатором для аутентификации вместо имен пользователей.
     """
-    def create_user(self, email: str, password: str = None, **extra_fields) -> 'CustomUser':
+
+    def create_user(
+        self, email: str, password: str = None, **extra_fields
+    ) -> "CustomUser":
         """
         Создаёт и сохраняет пользователя с указанным адресом электронной почты и паролем.
 
@@ -21,14 +28,14 @@ class CustomUserManager(BaseUserManager):
             CustomUser: созданный пользователь
         """
         if not email:
-            raise ValueError('The Email field must be set')
+            raise ValueError("The Email field must be set")
         email = self.normalize_email(email)
-        user: 'CustomUser' = self.model(email=email, **extra_fields)
+        user: "CustomUser" = self.model(email=email, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email, password=None, **extra_fields) -> 'CustomUser':
+    def create_superuser(self, email, password=None, **extra_fields) -> "CustomUser":
         """
         Создает и сохраняет суперпользователя с указанным адресом электронной почты и паролем.
 
@@ -40,12 +47,12 @@ class CustomUserManager(BaseUserManager):
         Returns:
             CustomUser: созданный суперпользователь
         """
-        extra_fields.setdefault('is_staff', True)
-        extra_fields.setdefault('is_superuser', True)
+        extra_fields.setdefault("is_staff", True)
+        extra_fields.setdefault("is_superuser", True)
         return self.create_user(email, password, **extra_fields)
 
 
-def user_avatar_path(instance: 'CustomUser', filename: str) -> str:
+def user_avatar_path(instance: "CustomUser", filename: str) -> str:
     """
     Генерирует путь к файлу аватара пользователя.
 
@@ -56,7 +63,9 @@ def user_avatar_path(instance: 'CustomUser', filename: str) -> str:
     Returns:
         str: путь к файлу аватара пользователя
     """
-    return 'users/{user_email}/avatars/{filename}'.format(user_email=instance.email, filename=filename)
+    return "users/{user_email}/avatars/{filename}".format(
+        user_email=instance.email, filename=filename
+    )
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
@@ -79,6 +88,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         REQUIRED_FIELDS (list): Поля, которые будут запрашиваться (помимо USERNAME_FIELD) при создании пользователя через командную строку.
         objects (CustomUserManager): Менеджер, который занимается созданием экземпляров пользователей и управлением ими.
     """
+
     email = models.EmailField(unique=True)
     username = models.CharField(max_length=150)
     password = models.CharField(max_length=128)
@@ -87,18 +97,22 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     is_bot = models.BooleanField(default=False)
     bot_description = models.TextField(blank=True, null=True)
     is_active = models.BooleanField(default=True)
-    avatar = models.ImageField(upload_to=user_avatar_path,
-                               validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png'])],
-                               default='default_avatar.png')
+    avatar = models.ImageField(
+        upload_to=user_avatar_path,
+        validators=[FileExtensionValidator(allowed_extensions=["jpg", "jpeg", "png"])],
+        default="default_avatar.png",
+    )
 
     email_verified = models.BooleanField(default=False)
 
-    temp_email = models.EmailField(blank=True, null=True)  # Временный адрес для подтверждения почты
+    temp_email = models.EmailField(
+        blank=True, null=True
+    )  # Временный адрес для подтверждения почты
 
     date_joined = models.DateTimeField(auto_now_add=True)
 
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username']
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = ["username"]
 
     objects = CustomUserManager()
 
@@ -109,7 +123,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         """
         return self.email
 
-    def follow(self, user: 'CustomUser') -> None:
+    def follow(self, user: "CustomUser") -> None:
         """
         Подписывает пользователя на другого пользователя.
 
@@ -119,7 +133,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         if user != self and not self.is_following(user):
             Subscription.objects.create(follower=self, following=user)
 
-    def unfollow(self, user: 'CustomUser') -> None:
+    def unfollow(self, user: "CustomUser") -> None:
         """
         Отписывает пользователя от другого пользователя.
 
@@ -128,7 +142,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         """
         Subscription.objects.filter(follower=self, following=user).delete()
 
-    def is_following(self, user: 'CustomUser') -> bool:
+    def is_following(self, user: "CustomUser") -> bool:
         """
         Определяет, подписан ли пользователь на другого пользователя.
 
@@ -168,11 +182,15 @@ class Subscription(models.Model):
         following (ForeignKey): Пользователь, на которого подписываются.
     """
 
-    follower = models.ForeignKey(CustomUser, related_name='following', on_delete=models.CASCADE)
-    following = models.ForeignKey(CustomUser, related_name='followers', on_delete=models.CASCADE)
+    follower = models.ForeignKey(
+        CustomUser, related_name="following", on_delete=models.CASCADE
+    )
+    following = models.ForeignKey(
+        CustomUser, related_name="followers", on_delete=models.CASCADE
+    )
 
     class Meta:
-        unique_together = ('follower', 'following')
+        unique_together = ("follower", "following")
 
     def __str__(self):
         """

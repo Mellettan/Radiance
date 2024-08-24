@@ -1,21 +1,19 @@
 from typing import Optional
 
 from django.contrib import messages
+from django.contrib.auth import login as auth_login
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.tokens import default_token_generator
-from django.http import HttpResponseRedirect, HttpRequest, HttpResponse
-from django.urls import reverse_lazy, reverse
+from django.contrib.auth.views import PasswordChangeView
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
+from django.shortcuts import redirect, render
+from django.urls import reverse, reverse_lazy
 from django.utils.encoding import force_bytes
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.views import View
 from django.views.generic import FormView
 
-from .forms import ChangeEmailForm, CustomRegForm
-from django.contrib.auth.views import PasswordChangeView
-
-from django.shortcuts import render, redirect
-from django.contrib.auth import login as auth_login
-from .forms import CustomLoginForm
+from .forms import ChangeEmailForm, CustomLoginForm, CustomRegForm
 from .models import CustomUser
 from .tasks import send_confirmation_email
 
@@ -29,9 +27,10 @@ class LoginView(FormView):
         form_class (CustomLoginForm): класс формы, используемый для обработки и проверки пользовательского ввода.
         success_url (str): URL-адрес, на который будет перенаправлен пользователь после успешного входа в систему.
     """
-    template_name = 'accounts/login.html'
+
+    template_name = "accounts/login.html"
     form_class = CustomLoginForm
-    success_url = reverse_lazy('custom_login_redirect')
+    success_url = reverse_lazy("custom_login_redirect")
 
     def form_valid(self, form: CustomLoginForm) -> HttpResponseRedirect:
         user = form.get_user()
@@ -49,9 +48,10 @@ class ChangeEmailView(FormView):
         form_class (ChangeEmailForm): Класс формы, используемый для обработки пользовательского ввода и проверки изменения адреса электронной почты.
         success_url (str): URL-адрес для перенаправления после успешной отправки формы. Здесь он перенаправляется на ту же страницу.
     """
-    template_name = 'accounts/change_email.html'
+
+    template_name = "accounts/change_email.html"
     form_class = ChangeEmailForm
-    success_url = '.'
+    success_url = "."
 
     def form_valid(self, form: ChangeEmailForm) -> HttpResponseRedirect:
         """
@@ -75,13 +75,15 @@ class ChangeEmailView(FormView):
         token: str = default_token_generator.make_token(user)
         uid: str = urlsafe_base64_encode(force_bytes(user.pk))
         domain: str = self.request.get_host()
-        subject = 'Email Confirmation'
+        subject = "Email Confirmation"
         link = f"{self.request.scheme}://{domain}{reverse('accounts:confirm_email', kwargs={'uidb64': uid, 'token': token})}"
         message = f"Please confirm your email address by clicking on the link: {link}"
-        send_confirmation_email.send(subject, message, [form.cleaned_data['email']])
-        user.temp_email = form.cleaned_data['email']
+        send_confirmation_email.send(subject, message, [form.cleaned_data["email"]])
+        user.temp_email = form.cleaned_data["email"]
         user.save()
-        messages.info(self.request, 'Ссылка для подтверждения отправлена на указанный адрес')
+        messages.info(
+            self.request, "Ссылка для подтверждения отправлена на указанный адрес"
+        )
         return super().form_valid(form)
 
 
@@ -89,7 +91,10 @@ class ConfirmEmailView(View):
     """
     Представление, которое обрабатывает подтверждение адреса электронной почты пользователя.
     """
-    def get(self, request: HttpRequest, uidb64: str, token: str) -> HttpResponseRedirect:
+
+    def get(
+        self, request: HttpRequest, uidb64: str, token: str
+    ) -> HttpResponseRedirect:
         """
         Обрабатывает запросы GET для подтверждения адреса электронной почты пользователя.
 
@@ -123,13 +128,16 @@ class ConfirmEmailView(View):
                 user.email = user.temp_email
                 user.temp_email = None
                 user.save()
-                messages.success(request, 'Ваш адрес электронной почты подтвержден.')
+                messages.success(request, "Ваш адрес электронной почты подтвержден.")
             else:
-                messages.error(request, 'Ссылка для подтверждения недействительна или уже использована.')
+                messages.error(
+                    request,
+                    "Ссылка для подтверждения недействительна или уже использована.",
+                )
         else:
-            messages.error(request, 'Ссылка для подтверждения недействительна.')
+            messages.error(request, "Ссылка для подтверждения недействительна.")
 
-        return redirect('custom_login_redirect')
+        return redirect("custom_login_redirect")
 
 
 class RegView(FormView):
@@ -141,9 +149,10 @@ class RegView(FormView):
         form_class (CustomRegForm): Класс формы, используемый для обработки пользовательского ввода и проверки регистрации.
         success_url (str): URL-адрес для перенаправления после успешной регистрации. В данном случае это страница с постами пользователя.
     """
-    template_name = 'accounts/reg.html'
+
+    template_name = "accounts/reg.html"
     form_class = CustomRegForm
-    success_url = reverse_lazy('custom_login_redirect')
+    success_url = reverse_lazy("custom_login_redirect")
 
     def form_valid(self, form: CustomRegForm) -> HttpResponseRedirect:
         user = form.save()
@@ -155,16 +164,17 @@ class DeleteView(View):
     """
     Представление, которое обрабатывает удаление аккаунта пользователя.
     """
+
     def get(self, request: HttpRequest) -> HttpResponse:
-        return render(request, 'accounts/delete.html')
+        return render(request, "accounts/delete.html")
 
     def post(self, request: HttpRequest) -> HttpResponse:
-        if 'delete_button' in request.POST:
+        if "delete_button" in request.POST:
             user = request.user
             user.delete()
-            return redirect('custom_login_redirect')
+            return redirect("custom_login_redirect")
         else:
-            return render(request, 'accounts/delete.html')
+            return render(request, "accounts/delete.html")
 
 
 class CustomPasswordChangeView(PasswordChangeView):
@@ -175,9 +185,10 @@ class CustomPasswordChangeView(PasswordChangeView):
         template_name (str): Путь к шаблону, отображающему форму смены пароля.
         success_url (str): URL-адрес для перенаправления после успешной смены пароля.
     """
-    template_name = 'accounts/change_password.html'
-    success_url = reverse_lazy('custom_login_redirect')
+
+    template_name = "accounts/change_password.html"
+    success_url = reverse_lazy("custom_login_redirect")
 
     def form_valid(self, form: PasswordChangeForm) -> HttpResponseRedirect:
-        messages.success(self.request, 'Ваш пароль был успешно изменён!')
+        messages.success(self.request, "Ваш пароль был успешно изменён!")
         return super().form_valid(form)

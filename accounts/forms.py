@@ -9,13 +9,14 @@ class CustomLoginForm(forms.Form):
     """
     Форма для входа пользователей. Состоит из адреса электронной почты и пароля.
     """
+
     email = forms.EmailField(
-        label='Email',
-        widget=forms.EmailInput(attrs={'placeholder': 'Email', 'id': 'email'})
+        label="Email",
+        widget=forms.EmailInput(attrs={"placeholder": "Email", "id": "email"}),
     )
     password = forms.CharField(
-        label='Password',
-        widget=forms.PasswordInput(attrs={'placeholder': 'Password', 'id': 'password'})
+        label="Password",
+        widget=forms.PasswordInput(attrs={"placeholder": "Password", "id": "password"}),
     )
 
     def clean(self) -> dict:
@@ -42,8 +43,8 @@ class CustomLoginForm(forms.Form):
         Returns:
             CustomUser: Пользователь.
         """
-        email = self.cleaned_data.get('email')
-        password = self.cleaned_data.get('password')
+        email = self.cleaned_data.get("email")
+        password = self.cleaned_data.get("password")
         return authenticate(email=email, password=password)
 
 
@@ -54,7 +55,7 @@ class ChangeEmailForm(forms.ModelForm):
 
     class Meta:
         model = CustomUser
-        fields = ['email']
+        fields = ["email"]
 
 
 class CustomRegForm(forms.ModelForm):
@@ -62,20 +63,21 @@ class CustomRegForm(forms.ModelForm):
     Форма для регистрации пользователя.
     Состоит из имени пользователя, адреса электронной почты и пароля.
     """
+
     password1 = forms.CharField(
-        label='Password',
+        label="Password",
         widget=forms.PasswordInput,
         min_length=8,
     )
     password2 = forms.CharField(
-        label='Confirm Password',
+        label="Confirm Password",
         widget=forms.PasswordInput,
         min_length=8,
     )
 
     class Meta:
         model = CustomUser
-        fields = ['username', 'email']
+        fields = ["username", "email"]
 
     def clean_password2(self):
         """

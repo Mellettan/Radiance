@@ -25,11 +25,13 @@ def get_chat_users(user: CustomUser) -> QuerySet:
         QuerySet: Отдельный список экземпляров `CustomUser`, упорядоченный по имени пользователя.
     """
     sent_users = CustomUser.objects.filter(sent_messages__recipient=user).distinct()
-    received_users = CustomUser.objects.filter(received_messages__sender=user).distinct()
+    received_users = CustomUser.objects.filter(
+        received_messages__sender=user
+    ).distinct()
     current_user = CustomUser.objects.filter(pk=user.pk).distinct()
     chat_users = sent_users | received_users | current_user
 
-    return chat_users.distinct().order_by('username')
+    return chat_users.distinct().order_by("username")
 
 
 class ChatView(LoginRequiredMixin, View):
@@ -53,15 +55,19 @@ class ChatView(LoginRequiredMixin, View):
         """
         other_user = CustomUser.objects.get(id=user_id)
 
-        message_list = Message.objects.filter(
-            Q(sender=other_user, recipient=request.user) | Q(sender=request.user, recipient=other_user)
-        ).select_related('sender', 'recipient').order_by('timestamp')  # Отсортированный список сообщений данной пары пользователей по времени
+        message_list = (
+            Message.objects.filter(
+                Q(sender=other_user, recipient=request.user)
+                | Q(sender=request.user, recipient=other_user)
+            )
+            .select_related("sender", "recipient")
+            .order_by("timestamp")
+        )  # Отсортированный список сообщений данной пары пользователей по времени
 
         context = {
-            'other_user': other_user,
-            'user_id': user_id,
-            'message_list': message_list,
-            'chat_users': get_chat_users(request.user)
+            "other_user": other_user,
+            "user_id": user_id,
+            "message_list": message_list,
+            "chat_users": get_chat_users(request.user),
         }
-        return render(request, 'chat/chat.html', context)
-
+        return render(request, "chat/chat.html", context)

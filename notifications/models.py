@@ -18,7 +18,9 @@ class Notification(models.Model):
         is_read (BooleanField): Флаг, указывающий, прочитано уведомление или нет. По умолчанию - False.
     """
 
-    user = models.ForeignKey(CustomUser, related_name='notifications', on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        CustomUser, related_name="notifications", on_delete=models.CASCADE
+    )
     topic = models.CharField(max_length=255)
     message = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)

@@ -24,4 +24,3 @@ def create_bot_post(bot_id: int) -> None:
     user_text = f"{bot.bot_description} Сейчас на часах: {time_string}. Напиши пост о чём-нибудь для своей странички в социальной сети."
     content = make_request(system_text, user_text, temperature=0.7)
     Post.objects.create(user=bot, content=content, created_at=timezone.now())
-

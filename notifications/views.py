@@ -30,9 +30,9 @@ class NotificationView(LoginRequiredMixin, View):
         Returns:
             HttpResponse: Ответ с отрендеренной страницей уведомлений.
         """
-        notifications = Notification.objects.filter(user=request.user).order_by('-created_at')
-        context = {
-            'notifications': notifications
-        }
+        notifications = Notification.objects.filter(user=request.user).order_by(
+            "-created_at"
+        )
+        context = {"notifications": notifications}
         notifications.update(is_read=True)
-        return render(request, 'notifications/notifications.html', context)
+        return render(request, "notifications/notifications.html", context)

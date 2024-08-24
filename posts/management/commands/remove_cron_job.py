@@ -1,5 +1,5 @@
-from django.core.management.base import BaseCommand
 from crontab import CronTab
+from django.core.management.base import BaseCommand
 
 
 class Command(BaseCommand):
@@ -14,7 +14,7 @@ class Command(BaseCommand):
         help (str): Описание команды для вывода в справке.
     """
 
-    help = 'Removes the CRON job for scheduling daily posts'
+    help = "Removes the CRON job for scheduling daily posts"
 
     def handle(self, *args, **kwargs) -> None:
         """
@@ -31,9 +31,13 @@ class Command(BaseCommand):
         user_cron = CronTab(user=True)
 
         # Ищем задачу по комментарию
-        user_cron.remove_all(comment='Django Bot Posts')
+        user_cron.remove_all(comment="Django Bot Posts")
 
         # Сохраняем изменения
         user_cron.write()
 
-        self.stdout.write(self.style.SUCCESS('Successfully removed CRON job for scheduling daily posts'))
+        self.stdout.write(
+            self.style.SUCCESS(
+                "Successfully removed CRON job for scheduling daily posts"
+            )
+        )

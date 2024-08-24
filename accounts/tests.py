@@ -1,11 +1,12 @@
-from django.contrib.messages import get_messages
-from django.utils.http import urlsafe_base64_encode
-from django.utils.encoding import force_bytes
-from django.contrib.auth.tokens import default_token_generator
-from django.test import TestCase, Client
-from django.urls import reverse
 from django.contrib.auth import get_user_model
-from .forms import CustomLoginForm, ChangeEmailForm
+from django.contrib.auth.tokens import default_token_generator
+from django.contrib.messages import get_messages
+from django.test import Client, TestCase
+from django.urls import reverse
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode
+
+from .forms import ChangeEmailForm, CustomLoginForm
 
 
 class LoginViewTestCase(TestCase):
@@ -24,14 +25,13 @@ class LoginViewTestCase(TestCase):
         - Определяет URL для входа и успешного редиректа после входа.
         """
         self.client = Client()
-        self.email = 'testuser@test.com'
-        self.password = 'testpassword'
+        self.email = "testuser@test.com"
+        self.password = "testpassword"
         self.user = get_user_model().objects.create_user(
-            email=self.email,
-            password=self.password
+            email=self.email, password=self.password
         )
-        self.login_url = reverse('accounts:login')
-        self.success_url = reverse('custom_login_redirect')
+        self.login_url = reverse("accounts:login")
+        self.success_url = reverse("custom_login_redirect")
 
     def test_login_form_view(self):
         """
@@ -44,8 +44,8 @@ class LoginViewTestCase(TestCase):
         """
         response = self.client.get(self.login_url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'accounts/login.html')
-        self.assertIsInstance(response.context['form'], CustomLoginForm)
+        self.assertTemplateUsed(response, "accounts/login.html")
+        self.assertIsInstance(response.context["form"], CustomLoginForm)
 
     def test_login_success(self):
         """
@@ -55,10 +55,13 @@ class LoginViewTestCase(TestCase):
         - Редирект на успешный URL.
         - Пользователь аутентифицирован.
         """
-        response = self.client.post(self.login_url, {
-            'email': self.email,
-            'password': self.password,
-        })
+        response = self.client.post(
+            self.login_url,
+            {
+                "email": self.email,
+                "password": self.password,
+            },
+        )
         self.assertRedirects(response, self.success_url, fetch_redirect_response=False)
         self.assertTrue(response.wsgi_request.user.is_authenticated)
 
@@ -70,12 +73,17 @@ class LoginViewTestCase(TestCase):
         - Код статуса ответа (должен быть 200).
         - Наличие ошибки формы (должна быть ошибка 'Invalid email or password').
         """
-        response = self.client.post(self.login_url, {
-            'email': self.email,
-            'password': 'wrongpassword',
-        })
+        response = self.client.post(
+            self.login_url,
+            {
+                "email": self.email,
+                "password": "wrongpassword",
+            },
+        )
         self.assertEqual(response.status_code, 200)
-        self.assertFormError(response.context['form'], None, 'Invalid email or password')
+        self.assertFormError(
+            response.context["form"], None, "Invalid email or password"
+        )
 
 
 class ChangeEmailViewTestCase(TestCase):
@@ -96,12 +104,11 @@ class ChangeEmailViewTestCase(TestCase):
         """
         self.client = Client()
         self.user = get_user_model().objects.create_user(
-            email='testuser@test.com',
-            password='testpassword'
+            email="testuser@test.com", password="testpassword"
         )
-        self.client.login(email='testuser@test.com', password='testpassword')
-        self.change_email_url = reverse('accounts:change_email')
-        self.success_url = reverse('accounts:change_email')
+        self.client.login(email="testuser@test.com", password="testpassword")
+        self.change_email_url = reverse("accounts:change_email")
+        self.success_url = reverse("accounts:change_email")
 
     def test_change_email_form_view(self):
         """
@@ -114,8 +121,8 @@ class ChangeEmailViewTestCase(TestCase):
         """
         response = self.client.get(self.change_email_url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'accounts/change_email.html')
-        self.assertIsInstance(response.context['form'], ChangeEmailForm)
+        self.assertTemplateUsed(response, "accounts/change_email.html")
+        self.assertIsInstance(response.context["form"], ChangeEmailForm)
 
     def test_change_email_success(self):
         """
@@ -125,10 +132,13 @@ class ChangeEmailViewTestCase(TestCase):
         - Редирект на успешный URL.
         - Обновление email у пользователя в базе данных.
         """
-        new_email = 'newemail@example.com'
-        response = self.client.post(self.change_email_url, {
-            'email': new_email,
-        })
+        new_email = "newemail@example.com"
+        response = self.client.post(
+            self.change_email_url,
+            {
+                "email": new_email,
+            },
+        )
         self.assertRedirects(response, self.success_url)
         self.user.refresh_from_db()
         self.assertEqual(self.user.temp_email, new_email)
@@ -141,11 +151,16 @@ class ChangeEmailViewTestCase(TestCase):
         - Код статуса ответа (должен быть 200).
         - Наличие ошибки формы (должна быть ошибка 'This field is required.').
         """
-        response = self.client.post(self.change_email_url, {
-            'email': '',
-        })
+        response = self.client.post(
+            self.change_email_url,
+            {
+                "email": "",
+            },
+        )
         self.assertEqual(response.status_code, 200)
-        self.assertFormError(response.context['form'], 'email', 'This field is required.')
+        self.assertFormError(
+            response.context["form"], "email", "This field is required."
+        )
 
 
 class ConfirmEmailViewTestCase(TestCase):
@@ -166,15 +181,16 @@ class ConfirmEmailViewTestCase(TestCase):
         """
         self.client = Client()
         self.user = get_user_model().objects.create_user(
-            username='testuser',
-            password='testpassword',
-            email='testuser@example.com'
+            username="testuser", password="testpassword", email="testuser@example.com"
         )
-        self.user.temp_email = 'newemail@example.com'
+        self.user.temp_email = "newemail@example.com"
         self.user.save()
         self.token = default_token_generator.make_token(self.user)
         self.uidb64 = urlsafe_base64_encode(force_bytes(self.user.pk))
-        self.confirm_email_url = reverse('accounts:confirm_email', kwargs={'uidb64': self.uidb64, 'token': self.token})
+        self.confirm_email_url = reverse(
+            "accounts:confirm_email",
+            kwargs={"uidb64": self.uidb64, "token": self.token},
+        )
 
     def test_confirm_email_success(self):
         """
@@ -186,9 +202,11 @@ class ConfirmEmailViewTestCase(TestCase):
         - Удаление временного email.
         """
         response = self.client.get(self.confirm_email_url)
-        self.assertRedirects(response, reverse('custom_login_redirect'), fetch_redirect_response=False)
+        self.assertRedirects(
+            response, reverse("custom_login_redirect"), fetch_redirect_response=False
+        )
         self.user.refresh_from_db()
-        self.assertEqual(self.user.email, 'newemail@example.com')
+        self.assertEqual(self.user.email, "newemail@example.com")
         self.assertIsNone(self.user.temp_email)
 
     def test_confirm_email_invalid_token(self):
@@ -199,10 +217,17 @@ class ConfirmEmailViewTestCase(TestCase):
         - Редирект на URL успешного логина.
         - Наличие сообщения об ошибке в сообщениях.
         """
-        invalid_token = 'invalidtoken'
-        url = reverse('accounts:confirm_email', kwargs={'uidb64': self.uidb64, 'token': invalid_token})
+        invalid_token = "invalidtoken"
+        url = reverse(
+            "accounts:confirm_email",
+            kwargs={"uidb64": self.uidb64, "token": invalid_token},
+        )
         response = self.client.get(url)
-        self.assertRedirects(response, reverse('custom_login_redirect'), fetch_redirect_response=False)
+        self.assertRedirects(
+            response, reverse("custom_login_redirect"), fetch_redirect_response=False
+        )
         messages = list(get_messages(response.wsgi_request))
         self.assertEqual(len(messages), 1)
-        self.assertTrue(str(messages[0]).startswith('Ссылка для подтверждения недействительна'))
+        self.assertTrue(
+            str(messages[0]).startswith("Ссылка для подтверждения недействительна")
+        )

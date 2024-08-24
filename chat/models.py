@@ -20,8 +20,12 @@ class Message(models.Model):
             Автоматически устанавливается текущая дата и время при сохранении сообщения.
     """
 
-    sender = models.ForeignKey(CustomUser, related_name='sent_messages', on_delete=models.CASCADE)
-    recipient = models.ForeignKey(CustomUser, related_name='received_messages', on_delete=models.CASCADE)
+    sender = models.ForeignKey(
+        CustomUser, related_name="sent_messages", on_delete=models.CASCADE
+    )
+    recipient = models.ForeignKey(
+        CustomUser, related_name="received_messages", on_delete=models.CASCADE
+    )
     content = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
 

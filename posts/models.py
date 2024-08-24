@@ -1,4 +1,5 @@
 from django.db import models
+
 from accounts.models import CustomUser
 
 
@@ -20,7 +21,9 @@ class Post(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
-    liked_by = models.ManyToManyField(CustomUser, related_name='liked_posts', blank=True, default=None)
+    liked_by = models.ManyToManyField(
+        CustomUser, related_name="liked_posts", blank=True, default=None
+    )
 
     def __str__(self):
         """
@@ -48,7 +51,7 @@ class Comment(models.Model):
         created_at (DateTimeField): Дата и время создания комментария. Устанавливается автоматически при создании.
     """
 
-    post = models.ForeignKey(Post, related_name='comments', on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, related_name="comments", on_delete=models.CASCADE)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)

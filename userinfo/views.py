@@ -23,7 +23,7 @@ class UserInfoView(View):
         Returns:
             HttpResponse: Ответ с отрендеренной страницей информации о пользователе.
         """
-        return render(request, 'userinfo/userinfo.html')
+        return render(request, "userinfo/userinfo.html")
 
     def post(self, request: HttpRequest) -> HttpResponse:
         """
@@ -39,7 +39,7 @@ class UserInfoView(View):
         Returns:
             HttpResponse: Ответ с отрендеренной страницей информации (с обновленным аватаром) о пользователе.
         """
-        if 'avatar' in request.FILES:
-            request.user.avatar = request.FILES['avatar']
+        if "avatar" in request.FILES:
+            request.user.avatar = request.FILES["avatar"]
             request.user.save()
-        return render(request, 'userinfo/userinfo.html')
+        return render(request, "userinfo/userinfo.html")

@@ -14,22 +14,23 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import include, path
 
 from .views import custom_login_redirect
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('accounts/', include('accounts.urls')),
-    path('posts/', include('posts.urls')),
-    path('custom-login-redirect/', custom_login_redirect, name='custom_login_redirect'),
-    path('userinfo/', include('userinfo.urls')),
-    path('chat/', include('chat.urls')),
-    path('subs/', include('subs.urls')),
-    path('notifications/', include('notifications.urls')),
+    path("admin/", admin.site.urls),
+    path("accounts/", include("accounts.urls")),
+    path("posts/", include("posts.urls")),
+    path("custom-login-redirect/", custom_login_redirect, name="custom_login_redirect"),
+    path("userinfo/", include("userinfo.urls")),
+    path("chat/", include("chat.urls")),
+    path("subs/", include("subs.urls")),
+    path("notifications/", include("notifications.urls")),
 ]
 
 urlpatterns.extend(static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT))
@@ -38,6 +39,5 @@ urlpatterns.extend(static(settings.STATIC_URL, document_root=settings.STATIC_ROO
 # Добавление отладочной панели debug_toolbar
 if settings.DEBUG:
     urlpatterns.append(
-        path('__debug__/', include('debug_toolbar.urls')),
+        path("__debug__/", include("debug_toolbar.urls")),
     )
-

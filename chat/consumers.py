@@ -1,12 +1,13 @@
 import asyncio
 import json
 
+import loguru
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
-import loguru
 
 from accounts.models import CustomUser
 from utils.gpt import make_request
+
 from .models import Message
 
 logger = loguru.logger
@@ -29,27 +30,25 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     async def connect(self):
         """Обрабатывает настройку соединения WebSocket и присоединяется к `группе`."""
-        self.user_id = self.scope['url_route']['kwargs']['user_id']
-        self.current_user = self.scope['user'].id
+        self.user_id = self.scope["url_route"]["kwargs"]["user_id"]
+        self.current_user = self.scope["user"].id
 
-        logger.debug(f"Connecting... Current user_id: {self.current_user}, other user_id: {self.user_id}")
-        self.room_name = f'{min(self.current_user, self.user_id)}_{max(self.current_user, self.user_id)}'
-        self.room_group_name = f'chat_{self.room_name}'
-
-        await self.channel_layer.group_add(
-            self.room_group_name,
-            self.channel_name
+        logger.debug(
+            f"Connecting... Current user_id: {self.current_user}, other user_id: {self.user_id}"
         )
+        self.room_name = f"{min(self.current_user, self.user_id)}_{max(self.current_user, self.user_id)}"
+        self.room_group_name = f"chat_{self.room_name}"
+
+        await self.channel_layer.group_add(self.room_group_name, self.channel_name)
 
         await self.accept()
 
     async def disconnect(self, close_code):
         """Обрабатывает отключение WebSocket и удаляет пользователя из `группы`."""
-        logger.debug(f"Disconnecting chat consumer with room_group_name: {self.room_group_name}")
-        await self.channel_layer.group_discard(
-            self.room_group_name,
-            self.channel_name
+        logger.debug(
+            f"Disconnecting chat consumer with room_group_name: {self.room_group_name}"
         )
+        await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 
     async def receive(self, text_data: str) -> None:
         """
@@ -62,10 +61,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 JSON должен включать в себя `message`, `receiver_id`, `sender_id` и `time`.
         """
         text_data_json = json.loads(text_data)
-        message = text_data_json['message']
-        receiver_id = text_data_json.get('receiver_id')
-        sender_id = text_data_json.get('sender_id')
-        time = text_data_json.get('time')
+        message = text_data_json["message"]
+        receiver_id = text_data_json.get("receiver_id")
+        sender_id = text_data_json.get("sender_id")
+        time = text_data_json.get("time")
 
         # Сохраняем сообщение в базе данных
         await database_sync_to_async(self.save_message)(message, receiver_id, sender_id)
@@ -75,18 +74,22 @@ class ChatConsumer(AsyncWebsocketConsumer):
         await self.channel_layer.group_send(
             self.room_group_name,
             {
-                'type': 'chat_message',
-                'message': message,
-                'receiver_id': receiver_id,
-                'sender_id': sender_id,
-                'time': time
-            }
+                "type": "chat_message",
+                "message": message,
+                "receiver_id": receiver_id,
+                "sender_id": sender_id,
+                "time": time,
+            },
         )
 
         # Параллельное выполнение задачи получения ответа от GPT
-        asyncio.create_task(self.process_bot_response(message, receiver_id, sender_id, time))
+        asyncio.create_task(
+            self.process_bot_response(message, receiver_id, sender_id, time)
+        )
 
-    async def process_bot_response(self, message: str, receiver_id: str, sender_id: str, time: str) -> None:
+    async def process_bot_response(
+        self, message: str, receiver_id: str, sender_id: str, time: str
+    ) -> None:
         """
         Обрабатывает ответ бота на входящее сообщение и отправляет его всем участникам группы.
 
@@ -99,7 +102,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
             sender_id (str): Идентификатор отправителя сообщения.
             time (str): Время отправки сообщения.
         """
-        receiver_user: CustomUser = await database_sync_to_async(self.get_custom_user_by_id)(receiver_id)
+        receiver_user: CustomUser = await database_sync_to_async(
+            self.get_custom_user_by_id
+        )(receiver_id)
 
         if receiver_user.is_bot:
             logger.debug("starting GPT request")
@@ -115,19 +120,21 @@ class ChatConsumer(AsyncWebsocketConsumer):
             )
 
             # Сохраняем ответ GPT в базу данных
-            await database_sync_to_async(self.save_message)(gpt_response, sender_id, receiver_id)
+            await database_sync_to_async(self.save_message)(
+                gpt_response, sender_id, receiver_id
+            )
 
             # Отправка ответа GPT всем участникам группы
             logger.debug("receive_group_send_bot")
             await self.channel_layer.group_send(
                 self.room_group_name,
                 {
-                    'type': 'chat_message',
-                    'message': gpt_response,
-                    'receiver_id': sender_id,
-                    'sender_id': receiver_id,
-                    'time': time
-                }
+                    "type": "chat_message",
+                    "message": gpt_response,
+                    "receiver_id": sender_id,
+                    "sender_id": receiver_id,
+                    "time": time,
+                },
             )
 
     async def chat_message(self, event):
@@ -139,17 +146,21 @@ class ChatConsumer(AsyncWebsocketConsumer):
             event (dict): Данные о событии, содержащие `message`, `receiver_id`, `sender_id` и `time`.
         """
         logger.debug(f"Send a message to all chat participants: {event}")
-        message = event['message']
-        receiver_id = event['receiver_id']
-        sender_id = event['sender_id']
-        time = event['time']
+        message = event["message"]
+        receiver_id = event["receiver_id"]
+        sender_id = event["sender_id"]
+        time = event["time"]
 
-        await self.send(text_data=json.dumps({
-            'message': message,
-            'receiver_id': receiver_id,
-            'sender_id': sender_id,
-            'time': time
-        }))
+        await self.send(
+            text_data=json.dumps(
+                {
+                    "message": message,
+                    "receiver_id": receiver_id,
+                    "sender_id": sender_id,
+                    "time": time,
+                }
+            )
+        )
 
     def save_message(self, message, receiver_id, sender_id):
         """
@@ -163,7 +174,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         Message.objects.create(
             sender=CustomUser.objects.get(id=sender_id),
             recipient=CustomUser.objects.get(id=receiver_id),
-            content=message
+            content=message,
         )
 
     def get_custom_user_by_id(self, user_id) -> CustomUser:

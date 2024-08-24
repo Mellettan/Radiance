@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.urls import reverse
 
-from accounts.models import Subscription, CustomUser
+from accounts.models import CustomUser, Subscription
 
 
 class SubsViewTest(TestCase):
@@ -19,14 +19,28 @@ class SubsViewTest(TestCase):
 
         Создает несколько пользователей и подписку между двумя из них.
         """
-        self.user1 = CustomUser.objects.create_user(email='user1@example.com', password='password', username='user1')
-        self.user2 = CustomUser.objects.create_user(email='user2@example.com', password='password', username='user2')
-        self.user3 = CustomUser.objects.create_user(email='user3@example.com', password='password', username='user3')
-        self.user4 = CustomUser.objects.create_user(email='user4@example.com', password='password', username='user4')
-        self.user5 = CustomUser.objects.create_user(email='user5@example.com', password='password', username='user5')
-        self.user6 = CustomUser.objects.create_user(email='user6@example.com', password='password', username='user6')
+        self.user1 = CustomUser.objects.create_user(
+            email="user1@example.com", password="password", username="user1"
+        )
+        self.user2 = CustomUser.objects.create_user(
+            email="user2@example.com", password="password", username="user2"
+        )
+        self.user3 = CustomUser.objects.create_user(
+            email="user3@example.com", password="password", username="user3"
+        )
+        self.user4 = CustomUser.objects.create_user(
+            email="user4@example.com", password="password", username="user4"
+        )
+        self.user5 = CustomUser.objects.create_user(
+            email="user5@example.com", password="password", username="user5"
+        )
+        self.user6 = CustomUser.objects.create_user(
+            email="user6@example.com", password="password", username="user6"
+        )
 
-        self.subscription = Subscription.objects.create(follower=self.user1, following=self.user2)
+        self.subscription = Subscription.objects.create(
+            follower=self.user1, following=self.user2
+        )
 
     def test_display_subscriptions(self):
         """
@@ -36,7 +50,7 @@ class SubsViewTest(TestCase):
         и что пользователи, на которых нет подписки, не отображаются.
         """
         self.client.force_login(self.user1)
-        url = reverse('subs:subs')
+        url = reverse("subs:subs")
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, self.user2.username)
@@ -50,8 +64,8 @@ class SubsViewTest(TestCase):
         а пользователи, не соответствующие запросу, не отображаются.
         """
         self.client.force_login(self.user1)
-        url = reverse('subs:subs')
-        response = self.client.get(url, {'q': self.user3.email})
+        url = reverse("subs:subs")
+        response = self.client.get(url, {"q": self.user3.email})
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, self.user3.username)
         self.assertNotContains(response, self.user4.username)
@@ -64,10 +78,12 @@ class SubsViewTest(TestCase):
         пагинации отображаются только пользователи, подходящие под запрос.
         """
         self.client.force_login(self.user1)
-        self.user7 = CustomUser.objects.create_user(email='user7@example.com', password='password', username='user7')
+        self.user7 = CustomUser.objects.create_user(
+            email="user7@example.com", password="password", username="user7"
+        )
 
-        url = reverse('subs:subs')
-        response = self.client.get(url, {'q': 'user', 'page': 1})
+        url = reverse("subs:subs")
+        response = self.client.get(url, {"q": "user", "page": 1})
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, self.user1.username)
         self.assertContains(response, self.user2.username)
@@ -79,7 +95,7 @@ class SubsViewTest(TestCase):
 
         Подтверждает, что анонимные пользователи ни на кого не подписаны.
         """
-        url = reverse('subs:subs')
+        url = reverse("subs:subs")
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertNotContains(response, self.user1.username)
@@ -92,7 +108,9 @@ class SubsViewTest(TestCase):
         если запрос поиска пуст.
         """
         self.client.force_login(self.user1)
-        url = reverse('subs:subs')
+        url = reverse("subs:subs")
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Пользователи не найдены')  # н + а + и +  ̆ + д + е + н + ы
+        self.assertContains(
+            response, "Пользователи не найдены"
+        )  # н + а + и +  ̆ + д + е + н + ы

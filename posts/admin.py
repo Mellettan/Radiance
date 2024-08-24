@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import Post, Comment
+
+from .models import Comment, Post
 
 
 @admin.register(Post)
@@ -17,11 +18,11 @@ class PostAdmin(admin.ModelAdmin):
         filter_horizontal (tuple): Поля, для которых будет использоваться горизонтальный фильтр.
     """
 
-    list_display = ('id', 'user', 'created_at', 'content_excerpt', 'liked_by_users')
-    search_fields = ('content',)
-    list_filter = ('created_at', 'user')
-    readonly_fields = ('created_at',)
-    filter_horizontal = ('liked_by',)
+    list_display = ("id", "user", "created_at", "content_excerpt", "liked_by_users")
+    search_fields = ("content",)
+    list_filter = ("created_at", "user")
+    readonly_fields = ("created_at",)
+    filter_horizontal = ("liked_by",)
 
     def liked_by_users(self, obj: Post) -> str:
         """
@@ -35,7 +36,7 @@ class PostAdmin(admin.ModelAdmin):
         """
         return ", ".join([user.username for user in obj.liked_by.all()])[:50]
 
-    liked_by_users.short_description = 'Liked By'
+    liked_by_users.short_description = "Liked By"
 
     def content_excerpt(self, obj: Post) -> str:
         """
@@ -49,7 +50,7 @@ class PostAdmin(admin.ModelAdmin):
         """
         return f"{obj.content[:47]}..."
 
-    content_excerpt.short_description = 'Content Excerpt'
+    content_excerpt.short_description = "Content Excerpt"
 
 
 @admin.register(Comment)
@@ -66,10 +67,10 @@ class CommentAdmin(admin.ModelAdmin):
         readonly_fields (tuple): Поля, доступные только для чтения в форме редактирования объекта.
     """
 
-    list_display = ('id', 'post', 'user', 'created_at', 'content_excerpt')
-    search_fields = ('content',)
-    list_filter = ('created_at', 'post', 'user')
-    readonly_fields = ('created_at',)
+    list_display = ("id", "post", "user", "created_at", "content_excerpt")
+    search_fields = ("content",)
+    list_filter = ("created_at", "post", "user")
+    readonly_fields = ("created_at",)
 
     def content_excerpt(self, obj):
         """
@@ -83,4 +84,4 @@ class CommentAdmin(admin.ModelAdmin):
         """
         return f"{obj.content[:47]}..."
 
-    content_excerpt.short_description = 'Content Excerpt'
+    content_excerpt.short_description = "Content Excerpt"

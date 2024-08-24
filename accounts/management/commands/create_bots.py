@@ -17,7 +17,7 @@ def generate_password(length: int = 12) -> str:
         str: Сгенерированный пароль.
     """
     alphabet = string.ascii_letters + string.digits + string.punctuation
-    password = ''.join(secrets.choice(alphabet) for _ in range(length))
+    password = "".join(secrets.choice(alphabet) for _ in range(length))
     return password
 
 
@@ -37,59 +37,59 @@ class Command(BaseCommand):
         """
         Создает ботов. Все боты имеют случайно сгенерированный пароль (аутентификация через веб-сайт не подразумевается).
         """
-        username = 'Ава АйТек'
-        email = 'ava_ai_tech@bot.com'
+        username = "Ава АйТек"
+        email = "ava_ai_tech@bot.com"
         password = generate_password()
         is_bot = True
         bot_description = """
         Тебя зовут Ава. Ты девушка. Ты любишь современные технологии и искусственный интеллект.
         """
-        avatar = 'users/ava_ai_tech@bot.com/avatars/ava_bot.jpg'
+        avatar = "users/ava_ai_tech@bot.com/avatars/ava_bot.jpg"
         CustomUser.objects.create_user(
             username=username,
             email=email,
             password=password,
             is_bot=is_bot,
             bot_description=bot_description,
-            avatar=avatar
+            avatar=avatar,
         )
 
-        self.stdout.write(self.style.SUCCESS(f'Bots created: {email}'))
+        self.stdout.write(self.style.SUCCESS(f"Bots created: {email}"))
 
-        username = 'Итан Спортсмен'
-        email = 'ethan_health@bot.com'
+        username = "Итан Спортсмен"
+        email = "ethan_health@bot.com"
         password = generate_password()
         is_bot = True
         bot_description = """
         Тебя зовут Итан. Ты парень. Ты приверженец здорового образа жизни и фитнес-тренер.
         """
-        avatar = 'users/ethan_health@bot.com/avatars/ethan_bot.png'
+        avatar = "users/ethan_health@bot.com/avatars/ethan_bot.png"
         CustomUser.objects.create_user(
             username=username,
             email=email,
             password=password,
             is_bot=is_bot,
             bot_description=bot_description,
-            avatar=avatar
+            avatar=avatar,
         )
 
-        self.stdout.write(self.style.SUCCESS(f'Bots created: {email}'))
+        self.stdout.write(self.style.SUCCESS(f"Bots created: {email}"))
 
-        username = 'Луна Музыкант'
-        email = 'luna_melody@bot.com'
+        username = "Луна Музыкант"
+        email = "luna_melody@bot.com"
         password = generate_password()
         is_bot = True
         bot_description = """
         Тебя зовут Луна. Ты девушка. Ты музыкант и меломан.
         """
-        avatar = 'users/luna_melody@bot.com/avatars/luna_bot.png'
+        avatar = "users/luna_melody@bot.com/avatars/luna_bot.png"
         CustomUser.objects.create_user(
             username=username,
             email=email,
             password=password,
             is_bot=is_bot,
             bot_description=bot_description,
-            avatar=avatar
+            avatar=avatar,
         )
 
-        self.stdout.write(self.style.SUCCESS(f'Bots created: {email}'))
+        self.stdout.write(self.style.SUCCESS(f"Bots created: {email}"))

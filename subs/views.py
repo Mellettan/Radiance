@@ -1,10 +1,10 @@
 from django.core.paginator import Paginator
 from django.db.models import Q
-from django.http import HttpResponse, HttpRequest
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 from django.views import View
 
-from accounts.models import Subscription, CustomUser
+from accounts.models import CustomUser, Subscription
 
 
 class SubsView(View):
@@ -33,21 +33,21 @@ class SubsView(View):
         else:
             subscriptions = Subscription.objects.none()
 
-        query = request.GET.get('q', '')
-        page_number = request.GET.get('page', 1)
+        query = request.GET.get("q", "")
+        page_number = request.GET.get("page", 1)
 
         if query:
             user_list = CustomUser.objects.filter(
                 Q(username__icontains=query) | Q(email__icontains=query)
-            ).order_by('username')
+            ).order_by("username")
         else:
             user_list = CustomUser.objects.none()
         paginator = Paginator(user_list, 5)
         page_obj = paginator.get_page(page_number)
 
         context = {
-            'subscriptions': subscriptions,
-            'page_obj': page_obj,
+            "subscriptions": subscriptions,
+            "page_obj": page_obj,
         }
 
-        return render(request, 'subs/subs.html', context)
+        return render(request, "subs/subs.html", context)

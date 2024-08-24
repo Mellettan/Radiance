@@ -20,16 +20,18 @@ class Command(BaseCommand):
         Args:
             parser: Синтаксический анализатор аргументов
         """
-        parser.add_argument('number', type=int, help='The number of users to create')
+        parser.add_argument("number", type=int, help="The number of users to create")
 
     def handle(self, *args, **kwargs) -> None:
         """
         Создает указанное количество пользователей.
         """
-        number = kwargs['number']
-        timestamp = time.strftime('%Y%m%d%H%M%S')
+        number = kwargs["number"]
+        timestamp = time.strftime("%Y%m%d%H%M%S")
         for i in range(number):
-            username = f'user{i}_{timestamp}'
-            email = f'user{i}_{timestamp}@example.com'
-            password = 'password'
-            CustomUser.objects.create_user(username=username, email=email, password=password)
+            username = f"user{i}_{timestamp}"
+            email = f"user{i}_{timestamp}@example.com"
+            password = "password"
+            CustomUser.objects.create_user(
+                username=username, email=email, password=password
+            )

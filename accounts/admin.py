@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
+
 from .models import CustomUser, Subscription
 
 
@@ -13,10 +14,11 @@ class SubscriptionInline(admin.TabularInline):
         fields (List[str]): поля, которые будут отображаться.
         fk_name (str): имя поля внешнего ключа.
     """
+
     model = Subscription
     extra = 0
-    fields = ('follower', 'following')
-    fk_name = 'follower'
+    fields = ("follower", "following")
+    fk_name = "follower"
 
 
 @admin.register(CustomUser)
@@ -34,6 +36,7 @@ class CustomUserAdmin(UserAdmin):
         add_fieldsets: наборы полей, которые будут отображаться в форме добавления.
         inlines: встроенные панели, которые будут отображаться в формах добавления/изменения.
     """
+
     def get_following(self, obj: CustomUser) -> str:
         """
         Возвращает разделенную запятыми строку из адресов электронной почты пользователей,
@@ -47,7 +50,7 @@ class CustomUserAdmin(UserAdmin):
         """
         return ", ".join(user.email for user in obj.get_following())
 
-    get_following.short_description = 'Following'
+    get_following.short_description = "Following"
 
     def get_followers(self, obj: CustomUser) -> str:
         """
@@ -62,26 +65,54 @@ class CustomUserAdmin(UserAdmin):
         """
         return ", ".join(user.email for user in obj.get_followers())
 
-    get_followers.short_description = 'Followers'
+    get_followers.short_description = "Followers"
 
     model = CustomUser
-    list_display = ('pk', 'email', 'username', 'is_active', 'is_staff', 'is_bot', 'is_superuser',
-                    'email_verified', 'date_joined', 'get_following', 'get_followers')
-    list_filter = ('is_active', 'is_staff', 'is_bot')
-    search_fields = ('email', 'username')
-    ordering = ('pk', 'email',)
+    list_display = (
+        "pk",
+        "email",
+        "username",
+        "is_active",
+        "is_staff",
+        "is_bot",
+        "is_superuser",
+        "email_verified",
+        "date_joined",
+        "get_following",
+        "get_followers",
+    )
+    list_filter = ("is_active", "is_staff", "is_bot")
+    search_fields = ("email", "username")
+    ordering = (
+        "pk",
+        "email",
+    )
 
     fieldsets = (
-        (None, {'fields': ('email', 'password', 'email_verified')}),
-        ('Personal info', {'fields': ('username', 'avatar')}),
-        ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'user_permissions', 'groups')}),
+        (None, {"fields": ("email", "password", "email_verified")}),
+        ("Personal info", {"fields": ("username", "avatar")}),
+        (
+            "Permissions",
+            {
+                "fields": (
+                    "is_active",
+                    "is_staff",
+                    "is_superuser",
+                    "user_permissions",
+                    "groups",
+                )
+            },
+        ),
     )
 
     add_fieldsets = (
-        (None, {
-            'classes': ('wide',),
-            'fields': ('email', 'username', 'password1', 'password2'),
-        }),
+        (
+            None,
+            {
+                "classes": ("wide",),
+                "fields": ("email", "username", "password1", "password2"),
+            },
+        ),
     )
 
     inlines = [SubscriptionInline]

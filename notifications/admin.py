@@ -1,4 +1,5 @@
 from django.contrib import admin
+
 from .models import Notification
 
 
@@ -16,8 +17,9 @@ class NotificationAdmin(admin.ModelAdmin):
         ordering (tuple): Порядок сортировки объектов в списке (по умолчанию по дате создания в обратном порядке).
         readonly_fields (tuple): Поля, которые будут доступны только для чтения в форме редактирования объекта.
     """
-    list_display = ('user', 'topic', 'message', 'created_at', 'is_read')
-    list_filter = ('is_read', 'created_at', 'user')
-    search_fields = ('user__email', 'topic', 'message')
-    ordering = ('-created_at',)
-    readonly_fields = ('created_at',)
+
+    list_display = ("user", "topic", "message", "created_at", "is_read")
+    list_filter = ("is_read", "created_at", "user")
+    search_fields = ("user__email", "topic", "message")
+    ordering = ("-created_at",)
+    readonly_fields = ("created_at",)

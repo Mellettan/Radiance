@@ -1,4 +1,5 @@
 from django.contrib import admin
+
 from .models import Message
 
 
@@ -14,15 +15,16 @@ class MessageAdmin(admin.ModelAdmin):
         ordering (list): Список полей, которые будут использоваться для упорядочивания в административной панели.
         readonly_fields (list): Список полей, которые будут отображаться только для чтения в административной панели.
     """
-    list_display = ('pk', 'sender', 'recipient', 'content_preview', 'timestamp')
 
-    search_fields = ('sender__username', 'recipient__username', 'content')
+    list_display = ("pk", "sender", "recipient", "content_preview", "timestamp")
 
-    list_filter = ('sender', 'recipient', 'timestamp')
+    search_fields = ("sender__username", "recipient__username", "content")
 
-    ordering = ('-timestamp',)
+    list_filter = ("sender", "recipient", "timestamp")
 
-    readonly_fields = ('timestamp',)
+    ordering = ("-timestamp",)
+
+    readonly_fields = ("timestamp",)
 
     def content_preview(self, obj: Message) -> str:
         """
@@ -39,4 +41,4 @@ class MessageAdmin(admin.ModelAdmin):
         """
         return obj.content[:50]
 
-    content_preview.short_description = 'Content Preview'
+    content_preview.short_description = "Content Preview"

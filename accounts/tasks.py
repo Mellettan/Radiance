@@ -1,10 +1,12 @@
 import dramatiq
-from django.core.mail import send_mail
 from django.conf import settings
+from django.core.mail import send_mail
 
 
 @dramatiq.actor
-def send_confirmation_email(subject: str, message: str, recipient_list: list[str]) -> None:
+def send_confirmation_email(
+    subject: str, message: str, recipient_list: list[str]
+) -> None:
     """
     Асинхронно отправляет электронное письмо с подтверждением списку получателей.
 

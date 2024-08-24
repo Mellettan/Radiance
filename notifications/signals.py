@@ -3,12 +3,15 @@ from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from django.urls import reverse
 
-from accounts.models import Subscription, CustomUser, CustomUser
+from accounts.models import CustomUser, Subscription
+
 from .models import Notification
 
 
 @receiver(post_save, sender=Subscription)
-def create_notification_on_follow(sender: Subscription, instance: Subscription, created: bool, **kwargs) -> None:
+def create_notification_on_follow(
+    sender: Subscription, instance: Subscription, created: bool, **kwargs
+) -> None:
     """
     Создает уведомление, когда пользователь подписывается на другого.
 
@@ -26,8 +29,8 @@ def create_notification_on_follow(sender: Subscription, instance: Subscription, 
         following = instance.following
         Notification.objects.create(
             user=following,
-            topic='Подписка',
-            message=f'<a href="{reverse("posts:home", kwargs={"pk": follower.pk})}">{follower.username}</a> подписался на вас.'
+            topic="Подписка",
+            message=f'<a href="{reverse("posts:home", kwargs={"pk": follower.pk})}">{follower.username}</a> подписался на вас.',
         )
 
 
@@ -69,16 +72,16 @@ def create_notification(sender, instance, **kwargs):
         instance (CustomUser): Экземпляр модели CustomUser, который был сохранен.
         **kwargs: Дополнительные параметры.
     """
-    if hasattr(instance, '_password_changed') and instance._password_changed:
+    if hasattr(instance, "_password_changed") and instance._password_changed:
         Notification.objects.create(
             user=instance,
             topic="Изменение пароля",
-            message="Ваш пароль был успешно изменен."
+            message="Ваш пароль был успешно изменен.",
         )
 
-    if hasattr(instance, '_email_changed') and instance._email_changed:
+    if hasattr(instance, "_email_changed") and instance._email_changed:
         Notification.objects.create(
             user=instance,
             topic="Изменение email",
-            message=f"Ваш email был успешно изменен на {instance.email}."
+            message=f"Ваш email был успешно изменен на {instance.email}.",
         )
