@@ -6,7 +6,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 import loguru
 
 from accounts.models import CustomUser
-from .gpt import make_request
+from utils.gpt import make_request
 from .models import Message
 
 logger = loguru.logger
