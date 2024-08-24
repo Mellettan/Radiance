@@ -51,7 +51,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             self.channel_name
         )
 
-    async def receive(self, text_data):
+    async def receive(self, text_data: str) -> None:
         """
         Обрабатывает входящие сообщения WebSocket, сохраняет их в базу данных,
         и передает сообщение `группе`.
@@ -86,7 +86,19 @@ class ChatConsumer(AsyncWebsocketConsumer):
         # Параллельное выполнение задачи получения ответа от GPT
         asyncio.create_task(self.process_bot_response(message, receiver_id, sender_id, time))
 
-    async def process_bot_response(self, message, receiver_id, sender_id, time):
+    async def process_bot_response(self, message: str, receiver_id: str, sender_id: str, time: str) -> None:
+        """
+        Обрабатывает ответ бота на входящее сообщение и отправляет его всем участникам группы.
+
+        Этот метод проверяет, является ли получатель сообщения ботом, и если это так, он использует GPT для генерации ответа.
+        Затем ответ сохраняется в базе данных и отправляется обратно участникам чата.
+
+        Args:
+            message (str): Сообщение, отправленное пользователем.
+            receiver_id (str): Идентификатор получателя сообщения.
+            sender_id (str): Идентификатор отправителя сообщения.
+            time (str): Время отправки сообщения.
+        """
         receiver_user: CustomUser = await database_sync_to_async(self.get_custom_user_by_id)(receiver_id)
 
         if receiver_user.is_bot:
