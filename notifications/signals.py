@@ -1,4 +1,3 @@
-from django.contrib.auth import get_user_model
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from django.urls import reverse
@@ -15,13 +14,15 @@ def create_notification_on_follow(
     """
     Создает уведомление, когда пользователь подписывается на другого.
 
-    Этот сигнал срабатывает после сохранения объекта Subscription. Если подписка была создана,
-    создается уведомление для пользователя, на которого подписались.
+    Этот сигнал срабатывает после сохранения объекта Subscription.
+    Если подписка была создана, создается уведомление для пользователя,
+    на которого подписались.
 
     Args:
         sender (Model): Модель, отправляющая сигнал (Subscription).
         instance (Subscription): Экземпляр модели Subscription, который был сохранен.
-        created (bool): Флаг, указывающий, было ли создание новой записи (True) или обновление существующей (False).
+        created (bool): Флаг, указывающий, было ли создание новой записи (True)
+            или обновление существующей (False).
         **kwargs: Дополнительные параметры.
     """
     if created:
@@ -30,7 +31,10 @@ def create_notification_on_follow(
         Notification.objects.create(
             user=following,
             topic="Подписка",
-            message=f'<a href="{reverse("posts:home", kwargs={"pk": follower.pk})}">{follower.username}</a> подписался на вас.',
+            message=(
+                f'<a href="{reverse("posts:home", kwargs={"pk": follower.pk})}"'
+                f">{follower.username}</a> подписался на вас."
+            ),
         )
 
 
@@ -39,8 +43,9 @@ def check_user_changes(sender: CustomUser, instance: CustomUser, **kwargs):
     """
     Проверяет изменения в модели пользователя перед сохранением.
 
-    Этот сигнал срабатывает перед сохранением объекта модели CustomUser. Он проверяет, были ли изменены
-    пароль или email пользователя, и добавляет соответствующие флаги к экземпляру пользователя.
+    Этот сигнал срабатывает перед сохранением объекта модели CustomUser. Он проверяет,
+    были ли изменены пароль или email пользователя, и добавляет соответствующие
+    флаги к экземпляру пользователя.
 
     Args:
         sender (Model): Модель, отправляющая сигнал (CustomUser).
@@ -64,8 +69,9 @@ def create_notification(sender, instance, **kwargs):
     """
     Создает уведомления после изменения пароля или email пользователя.
 
-    Этот сигнал срабатывает после сохранения объекта модели CustomUser. Если были изменены
-    пароль или email пользователя, создаются соответствующие уведомления.
+    Этот сигнал срабатывает после сохранения объекта модели CustomUser.
+    Если были изменены пароль или email пользователя, создаются соответствующие
+    уведомления.
 
     Args:
         sender (Model): Модель, отправляющая сигнал (CustomUser).

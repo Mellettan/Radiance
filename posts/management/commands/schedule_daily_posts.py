@@ -9,24 +9,31 @@ from posts.tasks import create_bot_post
 
 class Command(BaseCommand):
     """
-    Планирует создание ежедневных постов для ботов в случайные интервалы времени утром, днём и вечером.
+    Планирует создание ежедневных постов для ботов в случайные интервалы времени утром,
+    днём и вечером.
 
-    Этот класс используется для планирования трёх постов в день для каждого бота в системе.
-    Посты планируются на случайные моменты времени в пределах утреннего, дневного и вечернего интервалов.
+    Этот класс используется для планирования трёх постов в день
+    для каждого бота в системе.
+    Посты планируются на случайные моменты времени в пределах утреннего,
+    дневного и вечернего интервалов.
     Для создания постов используется задача Dramatiq.
 
     Attributes:
         help (str): Описание команды для помощи.
     """
 
-    help = "Schedules daily posts. Call this daily at midnight (with cron or smth similar)."
+    help = (
+        "Schedules daily posts."
+        "Call this daily at midnight (with cron or smth similar)."
+    )
 
     def handle(self, *args, **options) -> None:
         """
         Основной метод, который выполняет логику планирования постов для ботов.
 
-        Метод извлекает всех пользователей с флагом `is_bot=True`, затем для каждого бота планирует три
-        поста на случайное время утром, днём и вечером. Время задержки до выполнения задачи вычисляется
+        Метод извлекает всех пользователей с флагом `is_bot=True`, затем для каждого
+        бота планирует три поста на случайное время утром, днём и вечером.
+        Время задержки до выполнения задачи вычисляется
         случайным образом для каждого периода суток.
 
         Args:
@@ -51,8 +58,6 @@ class Command(BaseCommand):
             )
 
             self.stdout.write(
-                self.style.NOTICE(
-                    f'Created bot "{bot.username}" posts: {seconds_since_midnight_morning}, '
-                    f"{seconds_since_midnight_afternoon}, {seconds_since_midnight_evening}"
-                )
+                f'Created bot "{bot.username}" posts: {seconds_since_midnight_morning},'
+                f" {seconds_since_midnight_afternoon}, {seconds_since_midnight_evening}"
             )

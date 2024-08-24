@@ -13,7 +13,8 @@ def unread_notifications_count(notifications: QuerySet) -> int:
     уведомлений, у которых поле `is_read` установлено в `False`.
 
     Args:
-        notifications (QuerySet): QuerySet объектов уведомлений, которые нужно отфильтровать.
+        notifications (QuerySet): QuerySet объектов уведомлений, которые нужно
+            отфильтровать.
 
     Returns:
         int: Количество непрочитанных уведомлений.

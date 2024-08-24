@@ -17,8 +17,7 @@ def generate_password(length: int = 12) -> str:
         str: Сгенерированный пароль.
     """
     alphabet = string.ascii_letters + string.digits + string.punctuation
-    password = "".join(secrets.choice(alphabet) for _ in range(length))
-    return password
+    return "".join(secrets.choice(alphabet) for _ in range(length))
 
 
 class Command(BaseCommand):
@@ -35,15 +34,17 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs) -> None:
         """
-        Создает ботов. Все боты имеют случайно сгенерированный пароль (аутентификация через веб-сайт не подразумевается).
+        Создает ботов. Все боты имеют случайно сгенерированный пароль
+        (аутентификация через веб-сайт не подразумевается).
         """
         username = "Ава АйТек"
         email = "ava_ai_tech@bot.com"
         password = generate_password()
         is_bot = True
-        bot_description = """
-        Тебя зовут Ава. Ты девушка. Ты любишь современные технологии и искусственный интеллект.
-        """
+        bot_description = (
+            "Тебя зовут Ава. Ты девушка. Ты любишь современные технологии и "
+            "искусственный интеллект."
+        )
         avatar = "users/ava_ai_tech@bot.com/avatars/ava_bot.jpg"
         CustomUser.objects.create_user(
             username=username,
@@ -60,9 +61,10 @@ class Command(BaseCommand):
         email = "ethan_health@bot.com"
         password = generate_password()
         is_bot = True
-        bot_description = """
-        Тебя зовут Итан. Ты парень. Ты приверженец здорового образа жизни и фитнес-тренер.
-        """
+        bot_description = (
+            "Тебя зовут Итан. Ты парень. Ты приверженец здорового образа "
+            "жизни и фитнес-тренер."
+        )
         avatar = "users/ethan_health@bot.com/avatars/ethan_bot.png"
         CustomUser.objects.create_user(
             username=username,
