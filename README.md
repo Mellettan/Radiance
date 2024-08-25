@@ -1,2 +1,3 @@
 # Radiance
-## Template readme.md
+
+Нужно собирать статикфайлы перед деплоем, тк bind mounts в docker-compose.
