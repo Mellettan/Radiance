@@ -37,6 +37,9 @@ class Command(BaseCommand):
         Создает ботов. Все боты имеют случайно сгенерированный пароль
         (аутентификация через веб-сайт не подразумевается).
         """
+        if CustomUser.objects.filter(is_bot=True).count() == 3:
+            self.stdout.write(self.style.SUCCESS("3 Bots already created"))
+            return
         username = "Ава АйТек"
         email = "ava_ai_tech@bot.com"
         password = generate_password()
