@@ -40,12 +40,14 @@ jobs:
       - name: Apply migrations
         env:
           DATABASE_URL: postgres://myuser:mypassword@localhost:5432/mydb
+          SECRET_KEY: some_secret_key
         run: |
           poetry run python manage.py migrate
 
       - name: Run tests
         env:
           DATABASE_URL: postgres://myuser:mypassword@localhost:5432/mydb
+          SECRET_KEY: some_secret_key
         run: |
           poetry run python manage.py test
 
