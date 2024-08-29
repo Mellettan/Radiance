@@ -24,6 +24,8 @@ jobs:
 
       rabbitmq:
         image: rabbitmq:management
+        ports:
+          - 5672:5672
 
     steps:
       - name: Checkout repository
