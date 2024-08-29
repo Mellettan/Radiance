@@ -22,6 +22,9 @@ jobs:
         ports:
           - 5432:5432
 
+      rabbitmq:
+        image: rabbitmq:management
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -48,6 +51,7 @@ jobs:
         env:
           DATABASE_URL: postgres://myuser:mypassword@localhost:5432/mydb
           DJANGO_SECRET_KEY: some_secret_key
+          RABBITMQ_URL: amqp://localhost:5672
         run: |
           poetry run python manage.py test
 
